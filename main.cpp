@@ -6,7 +6,8 @@
 #include"Engine/RootJob.h"
 #include"Engine/GameObject.h"
 #include"Engine/Model.h"
-
+#include"Engine/Quad.h"
+#include "Engine/Spirete.h"
 #pragma comment(lib, "winmm.lib")
 //定数宣言
 const char* WIN_GAME_NAME = "サンプルゲーム";
@@ -16,6 +17,7 @@ const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 float R;
 
 RootJob* pRootJob = nullptr;
+Spirete* pSpirete;
 
 //プロトタイプ宣言(ウィンドウプロシージャ)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -81,6 +83,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	pRootJob = new RootJob(nullptr);
 	pRootJob->Initialize();
 	//GameObject
+	pSpirete = new Spirete;
+	pSpirete->Initialize();
 	
 	
 	
@@ -142,8 +146,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//描画処理
 			Direct3D::BeginDraw();
 			pRootJob->DrawSub();
-			
-			
+			XMMATRIX mat = XMMatrixTranslation(0, 0, 0);
+			pSpirete->Draw(mat);
 			
 			
 			
@@ -155,7 +159,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 	Model::Release();
 	pRootJob->ReleaseSub();
-
+	SAFE_DELETE(pSpirete);
 
 	Input::Release();
 	Direct3D::Release();

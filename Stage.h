@@ -5,7 +5,7 @@
 //■■シーンを管理するクラス
 class Stage : public GameObject
 {
-	int hModel_;    //モデル番号
+	//int hModel_;    //モデル番号
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
