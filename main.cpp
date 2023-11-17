@@ -17,7 +17,7 @@ const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 float R;
 
 RootJob* pRootJob = nullptr;
-Spirete* pSpirete;
+//Spirete* pSpirete;
 
 //プロトタイプ宣言(ウィンドウプロシージャ)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -83,8 +83,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	pRootJob = new RootJob(nullptr);
 	pRootJob->Initialize();
 	//GameObject
-	pSpirete = new Spirete;
-	pSpirete->Initialize();
+	//pSpirete = new Spirete;
+	//pSpirete->Initialize();
 	
 	
 	
@@ -146,8 +146,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//描画処理
 			Direct3D::BeginDraw();
 			pRootJob->DrawSub();
-			XMMATRIX mat = XMMatrixTranslation(0, 0, 0);
-			pSpirete->Draw(mat);
+			//XMMATRIX mat = XMMatrixTranslation(0, 0, 0);
+			//pSpirete->Draw(mat);
 			
 			
 			
@@ -159,7 +159,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 	Model::Release();
 	pRootJob->ReleaseSub();
-	SAFE_DELETE(pSpirete);
+	//SAFE_DELETE(pSpirete);
 
 	Input::Release();
 	Direct3D::Release();

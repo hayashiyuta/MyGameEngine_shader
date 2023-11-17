@@ -1,6 +1,6 @@
 #include "Fbx.h"
 
-Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0), vertexCount_(0)
+Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0)
 {
 
 }
