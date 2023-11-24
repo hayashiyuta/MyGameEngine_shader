@@ -12,6 +12,8 @@ void Stage::Initialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("Assets\\Ground.fbx");
 	assert(hModel_ >= 0);
+	transform_.scale_.x = 3.0f;
+	transform_.scale_.z = 3.0f;
 }
 
 //更新
