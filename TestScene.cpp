@@ -3,6 +3,7 @@
 #include "Engine/SceneManager.h"
 #include"Stage.h"
 #include "Ball.h"
+#include "Arrow.h"
 //コンストラクタ
 TestScene::TestScene(GameObject* parent)
 	: GameObject(parent, "TestScene")
@@ -14,6 +15,7 @@ void TestScene::Initialize()
 {
 	Instantiate<Stage>(this);
 	Instantiate<Ball>(this);
+	Instantiate<Arrow>(this);
 }
 
 //更新
