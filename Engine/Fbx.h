@@ -29,8 +29,8 @@ class Fbx
 		XMMATRIX	matWVP;//wvp
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;		// ディフューズカラー（マテリアルの色）
-		XMFLOAT4	lightDirection;
-		XMFLOAT4	eyePos;
+		//XMFLOAT4	lightDirection;
+		//XMFLOAT4	eyePos;
 		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
 	};
 

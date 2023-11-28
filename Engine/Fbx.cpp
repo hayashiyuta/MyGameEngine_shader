@@ -7,7 +7,7 @@
 using namespace Direct3D;
 using namespace Camera;
 
-//const XMFLOAT4
+const XMFLOAT4 Light = {1.0f,1.0f,1.0f,1.0f};
 
 Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0)
 {
@@ -246,6 +246,7 @@ void    Fbx::Draw(Transform& transform)
 		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		//cb.lightDirection = ;
+		//cb.eyePos = 
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
