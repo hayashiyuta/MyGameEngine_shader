@@ -1,4 +1,13 @@
+#include<assert.h>
 #include "Fbx.h"
+#include"Direct3D.h"
+#include"Camera.h"
+#include"Texture.h"
+
+using namespace Direct3D;
+using namespace Camera;
+
+//const XMFLOAT4
 
 Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0)
 {
@@ -236,6 +245,7 @@ void    Fbx::Draw(Transform& transform)
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		//cb.lightDirection = ;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
 		D3D11_MAPPED_SUBRESOURCE pdata;

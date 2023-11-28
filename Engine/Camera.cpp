@@ -2,10 +2,10 @@
 
 namespace Camera {
 	//変数
-	XMVECTOR position_;	//カメラの位置（視点）
+	XMVECTOR position_;	//カメラの位置（視点）//ゲッター作る
 	XMVECTOR target_;	//見る位置（焦点）
-	XMMATRIX viewMatrix_;	//ビュー行列
-	XMMATRIX projMatrix_;	//プロジェクション行列
+	XMMATRIX viewMatrix_;	//ビュー行列//
+	XMMATRIX projMatrix_;	//プロジェクション行列//
 
 }
 
@@ -46,6 +46,11 @@ void Camera::SetTarget(XMVECTOR target)
 void Camera::SetTarget(XMFLOAT3 target)
 {
 	SetTarget(XMLoadFloat3(&target));
+}
+
+XMVECTOR Camera::GetCamPosition()
+{
+	return (position_);
 }
 
 //ビュー行列を取得
