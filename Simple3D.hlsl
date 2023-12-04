@@ -12,7 +12,10 @@ cbuffer global
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
 	float4x4	matW;	//ワールド行列
+	float4x4	matNormal;
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
+	float4		lightPosition;
+	float4		eyePosition;
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
 	
 };
@@ -25,6 +28,8 @@ struct VS_OUT
 	float4 pos    : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;	//UV座標
 	float4 color	: COLOR;	//色（明るさ）
+	float4 eyev		:POSITION;
+	float4 normal	:NORMAL;
 };
 
 //───────────────────────────────────────
@@ -38,14 +43,22 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
-	outData.uv = uv;
+	//outData.uv = uv;
+	outData.uv = inData.uv;
+	outData.color = diffuseColor;
+
+	float4 normal;
+	normal.w = 0;
+	normal = mul(inData.normal, matW);
+	normal normalize(normal);
+	outData.normal = normal;
 
 	//法線を回転
-	normal = mul(normal, matW);
+	/*normal = mul(normal, matW);
 
 	float4 light = float4(1, 0, 0, 0);
 	light = normalize(light);
-	outData.color = clamp(dot(normal, light), 0, 1);
+	outData.color = clamp(dot(normal, light), 0, 1);*/
 
 	//まとめて出力
 	return outData;
@@ -56,7 +69,17 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 light = float4(0.0, 2, 0, 1);//点光源の位置
+	light = mul(light, matW);
+	float3 LD = inData.pos_ - light;//光の方向ベクトル
+	float len = length(LD);//光の方向ベクトルを正規化
+	float4 outColor = { 1, 1, 1, 1 };
+	float lightMagnitude = seturate(dot(inData.normal, -normalize(LD)));
+	float k = seturate(1.0f / (1.0f + 1.0 * len * len));
+
+	return outColor * (0.8 * k * lightMagnitude * 0.2f);
+
+	/*float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	float4 ambentSource = float4(0.2f, 0.2f, 0.2f, 1.0f);//環境
 	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
 	float4 diffuse;
@@ -70,9 +93,6 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * float4(0.3, 0.3, 0.3, 1);
 	}
-	
-	
-	
-	return diffuse + ambient;
+	return diffuse + ambient;*/
 	}
 	

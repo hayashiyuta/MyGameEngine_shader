@@ -244,9 +244,10 @@ void    Fbx::Draw(Transform& transform)
 
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
-		//cb.lightDirection = ;
-		//cb.eyePos = ;
+		cb.lightDirection = Light;
+		XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
 		D3D11_MAPPED_SUBRESOURCE pdata;

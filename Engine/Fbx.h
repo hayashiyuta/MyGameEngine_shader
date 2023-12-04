@@ -26,11 +26,12 @@ class Fbx
 	};
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matWVP;//wvp
-		XMMATRIX	matNormal;
-		XMFLOAT4	diffuseColor;		// ディフューズカラー（マテリアルの色）
-		//XMFLOAT4	lightDirection;
-		//XMFLOAT4	eyePos;
+		XMMATRIX	matWVP;//wvpワールドビュープロジェクション
+		XMMATRIX    matW;//ワールド変換のみ
+		XMMATRIX	matNormal;//スケール×平行移動の逆行列
+		XMFLOAT4	diffuseColor;// ディフューズカラー（FBXからとってきた面の色）
+		XMFLOAT4	lightDirection;
+		XMFLOAT4	eyePos;
 		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
 	};
 
