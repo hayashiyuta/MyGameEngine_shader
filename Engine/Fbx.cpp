@@ -7,7 +7,7 @@
 using namespace Direct3D;
 using namespace Camera;
 
-const XMFLOAT4 Light = {1.0f,1.0f,1.0f,1.0f};
+const XMFLOAT4 Light = {3.0f,1.0f,1.0f,1.0f};
 
 Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0)
 {
