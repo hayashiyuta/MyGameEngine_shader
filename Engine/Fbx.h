@@ -23,6 +23,9 @@ class Fbx
 	{
 		Texture* pTexture;
 		XMFLOAT4	diffuse;
+		XMFLOAT4	ambient;			//環境光（アンビエント）への反射強度
+		XMFLOAT4	specular;			//鏡面反射光（スペキュラ）への反射強度
+		float		shininess;			//ハイライトの強さ（サイズ）
 	};
 	struct CONSTANT_BUFFER
 	{
