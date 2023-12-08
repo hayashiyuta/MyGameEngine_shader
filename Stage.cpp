@@ -1,5 +1,19 @@
 #include "Stage.h"
 #include "Engine/Model.h"
+/*void Stage::IntConstantBuffer()
+{
+	//コンスタントバッファ作成
+	D3D11_BUFFER_DESC cb;
+	cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+
+	// コンスタントバッファの作成
+	Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pCBStageScene_);
+}*/
 //コンストラクタ
 Stage::Stage(GameObject* parent)
 	: GameObject(parent, "Stage"), hModel_(-1)
