@@ -8,7 +8,7 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
-cbuffer global
+cbuffer global//:register(b0)
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
 	float4x4	matW;	//ワールド行列
@@ -19,6 +19,12 @@ cbuffer global
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
 	
 };
+
+/*cbuffer global:register(b1)
+{
+	float4		lightPosition;
+	float4		eyePosition;
+}*/
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体

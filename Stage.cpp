@@ -5,7 +5,7 @@
 	//コンスタントバッファ作成
 	D3D11_BUFFER_DESC cb;
 	cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
-	cb.Usage = D3D11_USAGE_DYNAMIC;
+	cb.Usage = D3D11_USAGE_DEFAULT;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
@@ -34,6 +34,16 @@ void Stage::Initialize()
 void Stage::Update()
 {
 	//transform_.rotate_.y += 0.5f;
+
+	//CBUFF_STAGESCENE cb;
+	//cb.lightPosition = lightSourcePosition_;
+	//XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
+
+	
+	//コンスタントバッファ
+	//Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);	//頂点シェーダー用	
+	//Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);	//ピクセルシェーダー用
+
 }
 
 //描画

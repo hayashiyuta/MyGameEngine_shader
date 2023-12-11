@@ -14,13 +14,14 @@ void Ball::Initialize()
 	assert(hModel_ >= 0);
 	transform_.position_.x = 1;
 	transform_.position_.y = 1;
-	//transform_.rotate_.z = 90;
+	
 	//transform_.scale_ = { 3,3,3 };
 }
 
 //çXêV
 void Ball::Update()
 {
+	transform_.rotate_.y += 0.5f;
 }
 
 //ï`âÊ
