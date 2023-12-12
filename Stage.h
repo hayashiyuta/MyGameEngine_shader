@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/Quad.h"
 
 struct CBUFF_STAGESCENE
 {
@@ -10,9 +11,11 @@ struct CBUFF_STAGESCENE
 class Stage : public GameObject
 {
 	int hModel_;    //モデル番号
-	//ID3D11Buffer* pCBStageScene_;
-	//void IntConstantBuffer();
-	//XMFLOAT4 lightSourcePosition_;
+	int hLightBall_;
+	Transform trLightBall;
+	ID3D11Buffer* pCBStageScene_;
+	void IntConstantBuffer();
+	XMFLOAT4 lightSourcePosition_;
 
 public:
 	//コンストラクタ
@@ -30,4 +33,7 @@ public:
 
 	//開放
 	void Release() override;
+
+	void	SetLightPos(XMFLOAT4& _pos) { lightSourcePosition_ = _pos; }
+	XMFLOAT4 GetLightPos() { return(lightSourcePosition_); }
 };

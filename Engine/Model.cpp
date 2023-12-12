@@ -1,9 +1,10 @@
 #include "Model.h"
-
+#include"Direct3D.h"
 namespace Model
 {
 	
 	std::vector<ModelData*>modelList;
+	RENDER_STATE state_;
 }
 
 int Model::Load(std::string fileName)
@@ -39,6 +40,11 @@ int Model::Load(std::string fileName)
 		//モデル番号はmodekListのインデックス
 	}
 
+	Fbx* Model::GetModel(int _hModel)
+	{
+		return modelList[_hModel]->pFbx_;
+	}
+
 	void Model::Draw(int hModel)
 	{
 		//モデル番号はmodekListのインデックス
@@ -67,3 +73,12 @@ int Model::Load(std::string fileName)
 		modelList.clear();
 	}
 
+	void Model::ToggleRenderState()
+	{
+		int n = (int)(Model::state_);
+		Model::state_ = (RENDER_STATE)(++n % 2);
+		for (auto& theI : modelList)
+		{
+			theI->pFbx_->SetRenderingShader(Model::state_);
+		}
+	}

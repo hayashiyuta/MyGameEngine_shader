@@ -16,6 +16,12 @@ using std::vector;
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
 //class Texture;//ポインタならこれでOK(ヘッダをインクルードしなくていい)
+enum RENDER_STATE
+{
+	RENDER_DIRLIGHT,
+	RENDER_PNTLIGHT,
+};
+
 class Fbx
 {
 	//マテリアル
@@ -33,11 +39,10 @@ class Fbx
 		XMMATRIX    matW;//ワールド変換のみ
 		XMMATRIX	matNormal;//スケール×平行移動の逆行列
 		XMFLOAT4	diffuseColor;// ディフューズカラー（FBXからとってきた面の色）
-		XMFLOAT4	lightPosition;
-		XMFLOAT4	eyePos;
 		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
 	};
-
+	//XMFLOAT4	lightPosition;
+	//XMFLOAT4	eyePos;
 
 	struct VERTEX
 	{
@@ -55,6 +60,7 @@ class Fbx
 	ID3D11Buffer* pConstantBuffer_;
 	MATERIAL* pMaterialList_;
 	vector<int>index_Count_;
+	RENDER_STATE state_;
 
 public:
 
@@ -65,5 +71,6 @@ public:
 	void    IntConstantBuffer();	//コンスタントバッファ準備
 	void    InitMaterial(fbxsdk::FbxNode* pNode);
 	void    Draw(Transform& transform);
+	void	SetRenderingShader(RENDER_STATE _state) { state_ = _state; }
 	void    Release();
 };
