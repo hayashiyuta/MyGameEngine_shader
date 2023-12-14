@@ -14,6 +14,8 @@ cbuffer global:register(b0)
 	float4x4	matW;	//ワールド行列
 	float4x4	matNormal;
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
+	float4		ambientColor;
+	float4		specularColor;
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
 	
 };
@@ -100,13 +102,13 @@ float4 PS(VS_OUT inData) : SV_Target
 	return outColor * (0.8 * k * lightMagnitude * 0.2f);*/
 
 	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);//ライトの色と明るさ Iin
-	float4 ambentSource = float4(0.2f, 0.2f, 0.2f, 1.0f);//環境(アンビエント係数 Ka)
+	float4 ambentSource = ambientColor;//環境(アンビエント係数 Ka)
 	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = saturate(dot(inData.normal,normalize(lightPosition)));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8);
+	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8) * specularColor;
 
 
 	if (isTexture == 0) {

@@ -190,21 +190,21 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		//マテリアルの色
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);//i番目のマテリアル情報を取得
 		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
-		FbxDouble3  ambient = FbxDouble3(0, 0, 0);
-		FbxDouble3  diffuse = FbxDouble3(0, 0, 0);
-		FbxDouble3  specular = FbxDouble3(0, 0, 0);
+		FbxDouble3  diffuse = pPhong->Diffuse;
+		FbxDouble3  ambient = pPhong->Ambient;
+		//FbxDouble3  specular = pPhong->Specular;
 
-		ambient = pPhong->Ambient;
-		diffuse = pPhong->Diffuse;
-
-		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
+		
 		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
-		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);
-		pMaterialList_[i].shininess = 0;
+		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
+		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);//ハイライトは黒
+		pMaterialList_[i].shininess = 1;
 
+		//Mayaで指定したのがフォンシェーダーだったら
 		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
 		{
-			specular = pPhong->Specular;
+			//Mayaで指定したSpecularColorの情報
+			FbxDouble3 specular = pPhong->Specular;
 			pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
 			pMaterialList_[i].shininess = (float)pPhong->Shininess;
 		}
@@ -240,8 +240,6 @@ void    Fbx::Draw(Transform& transform)
 	Direct3D::SetShader(SHADER_3D);
 	transform.Calclation();//トランスフォームを計算
 	
-	
-
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
 	//Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
 
@@ -257,6 +255,8 @@ void    Fbx::Draw(Transform& transform)
 		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.ambientColor = pMaterialList_[i].ambient;
+		cb.specularColor= pMaterialList_[i].specular;
 		//cb.lightPosition = Light;
 		//XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
