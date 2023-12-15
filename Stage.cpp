@@ -14,7 +14,7 @@ void Stage::IntConstantBuffer()
 	cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
 	cb.Usage = D3D11_USAGE_DEFAULT;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.CPUAccessFlags = 0;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 
@@ -112,8 +112,8 @@ void Stage::Update()
 
 	CBUFF_STAGESCENE cb;
 	cb.lightPosition = lightSourcePosition_;
-    cb.eyePos = tmp;
-	XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
+    //cb.eyePos = tmp;
+	XMStoreFloat4(&cb.eyePosition, Camera::GetCamPosition());
 
 	Direct3D::pContext_->UpdateSubresource(pCBStageScene_,
 		0, NULL, &cb, 0, 0);
