@@ -4,7 +4,7 @@
 #include"Engine/Input.h"
 
 namespace {
-	const XMFLOAT4 DEF_LIGHT_POSITION{ 2, 2, 1, 0 };
+	const XMFLOAT4 DEF_LIGHT_POSITION{ 3, 2, 1, 0 };
 }
 
 void Stage::IntConstantBuffer()
