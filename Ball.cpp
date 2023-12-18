@@ -10,7 +10,7 @@ Ball::Ball(GameObject* parent)
 void Ball::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Assets\\Ball2.fbx");
+	hModel_ = Model::Load("Assets\\Ball4.fbx");
 	assert(hModel_ >= 0);
 	transform_.position_.x = 1;
 	transform_.position_.y = 1;
