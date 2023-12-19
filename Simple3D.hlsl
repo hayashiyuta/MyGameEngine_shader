@@ -111,23 +111,27 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8) * specularColor;
 	//拡散反射
 	float2 uv;
-	uv.x = inData.color.x;
+	uv.x = abs(dot(normalize(inData.eyev), inData.normal));
+	uv.y = abs(dot(normalize(inData.eyev), inData.normal));
 	//float4 nk = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 
 		        //0.3 * step(n3, inData.color) + 0.4 * step(n4, inData.color);
+	float4 t1 = g_toon_texture.Sample(g_sampler, uv);
 	
 	
 
 	uv.x = 0.5;
 	
 	if (isTexture == 0) {
-		diffuse = lightSource * diffuseColor * inData.color;
+		diffuse = lightSource * diffuseColor * t1;
 		ambient = lightSource * diffuseColor * ambentSource;
 	}
 	else {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
+	//輪郭=視線ベクトルと面の法線の角度が90度付近
+	
 	return diffuse + ambient;
-	//return nk;
+	//return t1;
 }
 	

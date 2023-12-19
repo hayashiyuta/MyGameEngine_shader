@@ -62,7 +62,7 @@ HRESULT Fbx::Load(std::string fileName)
 	//マネージャ解放
 	pFbxManager->Destroy();
 	pToonTex_ = new Texture;
-	pToonTex_->Load("Assets\\toon.png");
+	pToonTex_->Load("Assets\\toon2.png");
 	return S_OK;
 }
 
