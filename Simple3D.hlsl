@@ -4,6 +4,8 @@
 Texture2D	g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
+Texture2D		g_toon_texture : register(t1);
+
 //───────────────────────────────────────
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -108,19 +110,15 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
 	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8) * specularColor;
 	//拡散反射
-	float4 nk;
-	if (inData.color.x < 1 / 3.0)
-	{
-		nk = float4(0.1,0.1,0.1,0.1);
-	}
-	else if (inData.color.x < 2 / 3.0)
-	{
-		nk = float4(0.6,0.6,0.6,0.6);
-	}
-	else
-	{
-		nk = float4(1.0, 1.0, 1.0, 1.0);
-	}
+	float2 uv;
+	uv.x = inData.color.x;
+	//float4 nk = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 
+		        //0.3 * step(n3, inData.color) + 0.4 * step(n4, inData.color);
+	
+	
+
+	uv.x = 0.5;
+	
 	if (isTexture == 0) {
 		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * ambentSource;
@@ -129,7 +127,7 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
-	//return diffuse + ambient + specular;
-	return nk;
+	return diffuse + ambient;
+	//return nk;
 }
 	

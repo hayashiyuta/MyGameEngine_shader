@@ -63,6 +63,7 @@ class Fbx
 	MATERIAL* pMaterialList_;
 	vector<int>index_Count_;
 	RENDER_STATE state_;
+	Texture* pToonTex_;
 
 public:
 
