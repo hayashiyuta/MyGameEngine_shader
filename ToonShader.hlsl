@@ -19,7 +19,7 @@ cbuffer global:register(b0)
 	float4		ambientColor;
 	float4		specularColor;
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
-	
+
 };
 
 cbuffer global:register(b1)
@@ -57,6 +57,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData = (VS_OUT)0;
 
+	pos = pos + normal * 0.5;
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
@@ -73,7 +74,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
 	outData.eyev = eyePosition - posw;
-	
+
 
 	//法線を回転
 	/*normal = mul(normal, matW);
@@ -114,24 +115,23 @@ float4 PS(VS_OUT inData) : SV_Target
 	uv.x = abs(dot(normalize(inData.eyev), inData.normal));
 	uv.y = abs(dot(normalize(inData.eyev), inData.normal));
 	//float4 nk = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 
-		        //0.3 * step(n3, inData.color) + 0.4 * step(n4, inData.color);
+				//0.3 * step(n3, inData.color) + 0.4 * step(n4, inData.color);
 	float4 t1 = g_toon_texture.Sample(g_sampler, uv);
-	
-	
+
+
 
 	uv.x = 0.5;
-	
+
 	if (isTexture == 0) {
-		diffuse = lightSource * diffuseColor * inData.color;
+		diffuse = lightSource * diffuseColor * t1;
 		ambient = lightSource * diffuseColor * ambentSource;
 	}
 	else {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
 	//輪郭=視線ベクトルと面の法線の角度が90度付近
-	
-	return diffuse + ambient + specular;
+
+	return ambient;
 	//return t1;
 }
-	
