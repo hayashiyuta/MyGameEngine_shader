@@ -45,8 +45,8 @@ struct VS_OUT
 	float4 pos    : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;	//UV座標
 	float4 eyev		:POSITION1;
-	float4 normal	:POSITION2;
-	float4 light	:POSITION3;
+	float4 normal	:POSITION2;//法線   XYZ -> RGB *2-1  
+  	float4 light	:POSITION3;         RGB -> X Y Z  +1/2  X Y Z(0,0,1) -> RGB(0.5,0.5,1)
 };*/
 
 //───────────────────────────────────────
@@ -57,7 +57,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData = (VS_OUT)0;
 
-	pos = pos + normal * 0.5;
+	pos = pos + normal * 0.02;
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
