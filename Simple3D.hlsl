@@ -122,16 +122,16 @@ float4 PS(VS_OUT inData) : SV_Target
 	uv.x = 0.5;
 	
 	if (isTexture == 0) {
-		diffuse = lightSource * diffuseColor * inData.color;
+		diffuse = lightSource * diffuseColor * t1;
 		ambient = lightSource * diffuseColor * ambentSource;
 	}
 	else {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
 	//輪郭=視線ベクトルと面の法線の角度が90度付近
 	
-	return diffuse + ambient + specular;
+	return diffuse + ambient;
 	//return t1;
 }
 	

@@ -56,8 +56,8 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 {
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData = (VS_OUT)0;
-
-	pos = pos + normal * 0.02;
+	normal.w = 0;//平行移動なしでマッピングされる
+	pos = pos + normal * 0.05;
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
