@@ -100,14 +100,28 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 
 	for (int i = 0; i < polygonCount_; i++)
 	{
+		mesh->GetElementTangentCount();//0
 		int sIndex = mesh->GetPolygonVertexIndex(i);
 		FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
-		FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
-		for (int j = 0; j < 3; j++)
+		
+		if (t) 
 		{
-			int index = mesh->GetPolygonVertices()[sIndex + j];
-			vertices[index].tangent
-				= { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
+			FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
+			for (int j = 0; j < 3; j++)
+			{
+				int index = mesh->GetPolygonVertices()[sIndex + j];
+				vertices[index].tangent
+					= { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
+			}
+		}
+		else
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				int index = mesh->GetPolygonVertices()[sIndex + j];
+				vertices[index].tangent
+					= { 0.0f,0.0f,0.0f,0.0f};
+			}
 		}
 
 	}
