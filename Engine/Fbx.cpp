@@ -97,6 +97,21 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 			vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
 		}
 	}
+
+	for (int i = 0; i < polygonCount_; i++)
+	{
+		int sIndex = mesh->GetPolygonVertexIndex(i);
+		FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+		FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
+		for (int j = 0; j < 3; j++)
+		{
+			int index = mesh->GetPolygonVertices()[sIndex + j];
+			vertices[index].tangent
+				= { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
+		}
+
+	}
+
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
 	bd_vertex.ByteWidth = sizeof(VERTEX) * vertexCount_;//sizeof(vertices[0]) * vertexCount_
@@ -212,7 +227,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		}
 
 		//テクスチャ情報
-		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sNormalMap);
 		//テクスチャの数数
 		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
@@ -229,8 +244,8 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			wsprintf(name, "%s%s", name, ext);
 
 			//ファイルからテクスチャ作成
-			pMaterialList_[i].pTexture = new Texture;
-			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
+			pMaterialList_[i].pNormalTexture = new Texture;
+			HRESULT hr = pMaterialList_[i].pNormalTexture->Load(name);
 			//assert(hr == S_OK);
 		}
 
@@ -294,6 +309,12 @@ void    Fbx::Draw(Transform& transform)
 				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
 				Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
 			}
+			if (pMaterialList_[i].pNormalTexture)
+			{
+				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
+				Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
+			}
+
 			ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
 			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
 

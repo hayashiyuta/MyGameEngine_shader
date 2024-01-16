@@ -28,6 +28,7 @@ class Fbx
 	struct MATERIAL
 	{
 		Texture* pTexture;
+		Texture* pNormalTexture;
 		XMFLOAT4	diffuse;
 		XMFLOAT4	ambient;			//環境光（アンビエント）への反射強度
 		XMFLOAT4	specular;			//鏡面反射光（スペキュラ）への反射強度
@@ -51,6 +52,7 @@ class Fbx
 		XMVECTOR position;//
 		XMVECTOR uv;//ポリゴン数
 		XMVECTOR normal;//法線ベクトル
+		XMVECTOR tangent;//接線
 	};
 
 	int vertexCount_;	//頂点数
