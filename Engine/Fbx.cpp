@@ -97,32 +97,25 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 			vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
 		}
 	}
-
+	FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+	//タンジェント取得
 	for (int i = 0; i < polygonCount_; i++)
 	{
-		mesh->GetElementTangentCount();//0
-		int sIndex = mesh->GetPolygonVertexIndex(i);
-		FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
-		
+		//mesh->GetElementTangentCount();//0
+		FbxVector4 tangent{ 0,0,0,0 };
+		int startsIndex = mesh->GetPolygonVertexIndex(i);
 		if (t) 
 		{
-			FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
-			for (int j = 0; j < 3; j++)
-			{
-				int index = mesh->GetPolygonVertices()[sIndex + j];
-				vertices[index].tangent
-					= { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
-			}
+			tangent = t->GetDirectArray().GetAt(startsIndex).mData;
+			
 		}
-		else
+		for (int j = 0; j < 3; j++)
 		{
-			for (int j = 0; j < 3; j++)
-			{
-				int index = mesh->GetPolygonVertices()[sIndex + j];
-				vertices[index].tangent
-					= { 0.0f,0.0f,0.0f,0.0f};
-			}
+			int index = mesh->GetPolygonVertices()[startsIndex + j];
+			vertices[index].tangent
+				= { (float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f };
 		}
+		
 
 	}
 
@@ -258,17 +251,47 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			wsprintf(name, "%s%s", name, ext);
 
 			//ファイルからテクスチャ作成
+			pMaterialList_[i].pTexture = new Texture;
+			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
+			//assert(hr == S_OK);
+		}
+		else {
+			pMaterialList_[i].pTexture = nullptr;
+		}
+
+
+		//ノーマルテクスチャ
+		//テクスチャ情報
+		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
+		//テクスチャの数数
+		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+		//テクスチャあり
+		if (fileTextureCount == true)
+		{
+			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+			const char* textureFilePath = textureInfo->GetRelativeFileName();
+
+			//ファイル名+拡張だけにする
+			char name[_MAX_FNAME];	//ファイル名
+			char ext[_MAX_EXT];	//拡張子
+			_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+			wsprintf(name, "%s%s", name, ext);
+
+			//ファイルからテクスチャ作成
 			pMaterialList_[i].pNormalTexture = new Texture;
 			HRESULT hr = pMaterialList_[i].pNormalTexture->Load(name);
 			//assert(hr == S_OK);
 		}
-
+		else {
+			pMaterialList_[i].pNormalTexture = nullptr;
+		}
 	}
 }
 
 void    Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_TOON);
+	Direct3D::SetShader(SHADER_NORMALMAP);
 	transform.Calclation();//トランスフォームを計算
 	
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
@@ -276,70 +299,66 @@ void    Fbx::Draw(Transform& transform)
 
 	//ID3D11ShaderResourceView* pSRV = pTexture_->GetSRV();
 	//Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
-
-	for (int j = 0; j < 2; j++)
+	for (int i = 0; i < materialCount_; i++)
 	{
-		for (int i = 0; i < materialCount_; i++)
+		CONSTANT_BUFFER cb;
+
+		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
+		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.ambientColor = pMaterialList_[i].ambient;
+		cb.specularColor = pMaterialList_[i].specular;
+		//cb.lightPosition = Light;
+		//XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
+		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+		cb.hasNormalMap = pMaterialList_[i].pNormalTexture != nullptr;
+
+		D3D11_MAPPED_SUBRESOURCE pdata;
+		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+
+
+		Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
+
+		//頂点バッファ
+		UINT stride = sizeof(VERTEX);
+		UINT offset = 0;
+		Direct3D::pContext_->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
+
+		// インデックスバッファーをセット
+		stride = sizeof(int);
+		offset = 0;
+		Direct3D::pContext_->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
+
+		//コンスタントバッファ
+		Direct3D::pContext_->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
+		Direct3D::pContext_->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
+
+
+		if (pMaterialList_[i].pTexture)
 		{
-			CONSTANT_BUFFER cb;
+			ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
+			Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
 
-			cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-			cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
-			cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
-			cb.diffuseColor = pMaterialList_[i].diffuse;
-			cb.ambientColor = pMaterialList_[i].ambient;
-			cb.specularColor = pMaterialList_[i].specular;
-			//cb.lightPosition = Light;
-			//XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
-			cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-
-			D3D11_MAPPED_SUBRESOURCE pdata;
-			Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-			memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
-
-			Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
-
-			//頂点バッファ
-			UINT stride = sizeof(VERTEX);
-			UINT offset = 0;
-			Direct3D::pContext_->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
-
-			// インデックスバッファーをセット
-			stride = sizeof(int);
-			offset = 0;
-			Direct3D::pContext_->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
-
-			//コンスタントバッファ
-			Direct3D::pContext_->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
-			Direct3D::pContext_->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
-
-
-			if (pMaterialList_[i].pTexture)
-			{
-				ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
-				Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);
-
-				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
-				Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
-			}
-			if (pMaterialList_[i].pNormalTexture)
-			{
-				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
-				Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
-			}
-
-			ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
-
-			Direct3D::pContext_->DrawIndexed(index_Count_[i], 0, 0);//polygonCount_ * 3
+			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
+			Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
 		}
-		Direct3D::SetShader(SHADER_3D);
-		
+		if (pMaterialList_[i].pNormalTexture)
+		{
+			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
+			Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
+		}
+
+		ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
+		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
+
+		Direct3D::pContext_->DrawIndexed(index_Count_[i], 0, 0);//polygonCount_ * 3
 	}
-	
-	
-	
+	/*for (int j = 0; j < 2; j++)
+	{
+		Direct3D::SetShader(SHADER_3D);
+	}*/
 }
 
 void    Fbx::Release()

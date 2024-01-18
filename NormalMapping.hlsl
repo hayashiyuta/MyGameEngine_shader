@@ -4,7 +4,7 @@
 Texture2D	g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
-Texture2D		g_toon_texture : register(t1);
+Texture2D		normalTex: register(t1);
 
 //───────────────────────────────────────
 // コンスタントバッファ
@@ -18,7 +18,8 @@ cbuffer global:register(b0)
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
 	float4		ambientColor;
 	float4		specularColor;
-	bool		isTexture;		// テクスチャ貼ってあるかどうか
+	int		hasTexture;		// テクスチャ貼ってあるかどうか
+	int		hasNormalMap;
 
 };
 
@@ -33,11 +34,13 @@ cbuffer global:register(b1)
 //───────────────────────────────────────
 struct VS_OUT
 {
-	float4 pos    : SV_POSITION;	//位置
-	float2 uv	: TEXCOORD;	//UV座標
-	float4 color	: COLOR;	//色（明るさ）
-	float4 eyev		:POSITION;
-	float4 normal	:NORMAL;
+	float4 pos		: SV_POSITION;	//位置
+	float2 uv		: TEXCOORD;	//UV座標
+	float4 eyev		: POSITION;
+	float4 Neyev	: POSITION1;
+	float4 normal	: POSITION2;
+	float4 light	: POSITION3;
+	float4 color	: POSITION4;
 };
 
 /*struct PS_IN
@@ -52,7 +55,7 @@ struct VS_OUT
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, float4 tangent : TANGENT)
 {
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData = (VS_OUT)0;
@@ -60,28 +63,38 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
-	//outData.uv = uv;
-	outData.uv = uv;
+	outData.uv = (float2)uv;
+
+	float3 binormal = cross(normal, tangent);
+
 	normal.w = 0;
 	normal = mul(normal, matNormal);
-	normal = normalize(normal);
+	normal = normalize(normal);//法線ベクトルをローカル座標に変換
 	outData.normal = normal;
+
+	tangent.w = 0;
+	tangent = mul(tangent, matNormal);
+	tangent = normalize(tangent);//接線ベクトルをローカル座標に変換
+
+	binormal = mul(binormal, matNormal);
+	binormal = normalize(binormal);//従法線ベクトルをローカル座標に変換
+
+	float4 posw = mul(pos, matW);
+	outData.Neyev.x = dot(outData.eyev, tangent);//接線間の視線ベクトル
+	outData.Neyev.y = dot(outData.eyev, binormal);
+	outData.Neyev.z = dot(outData.eyev, normal);
+	outData.Neyev.w = 0;
 
 	float4 light = normalize(lightPosition);
 	light = normalize(light);
 
-	outData.color = saturate(dot(normal, light));
-	float4 posw = mul(pos, matW);
-	outData.eyev = eyePosition - posw;
+	outData.color = mul(light, normal);
 
-
-	//法線を回転
-	/*normal = mul(normal, matW);
-
-	float4 light = float4(1, 0, 0, 0);
-	light = normalize(light);
-	outData.color = clamp(dot(normal, light), 0, 1);*/
-
+	outData.light.x = dot(light, tangent);//接線間の光源ベクトル
+	outData.light.y = dot(light, binormal);
+	outData.light.z = dot(light, normal);
+	outData.light.w = 0;
+	
 	//まとめて出力
 	return outData;
 }

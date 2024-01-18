@@ -43,6 +43,7 @@ class Fbx
 		XMFLOAT4	ambientColor;
 		XMFLOAT4	specularColor;
 		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
+		BOOL		hasNormalMap;
 	};
 	//XMFLOAT4	lightPosition;
 	//XMFLOAT4	eyePos;
