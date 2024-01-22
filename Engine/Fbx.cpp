@@ -230,7 +230,9 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			//Mayaで指定したSpecularColorの情報
 			FbxDouble3 specular = pPhong->Specular;
 			pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
-			pMaterialList_[i].shininess = (float)pPhong->Shininess;
+
+			FbxDouble shininess = pPhong->Shininess;
+			pMaterialList_[i].shininess = (float)shininess;
 		}
 
 		//テクスチャ情報
@@ -262,9 +264,9 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 		//ノーマルテクスチャ
 		//テクスチャ情報
-		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
+		lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
 		//テクスチャの数数
-		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+		fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
 		//テクスチャあり
 		if (fileTextureCount == true)
@@ -291,7 +293,10 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 void    Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_NORMALMAP);
+	if (state_ == RENDER_DIRLIGHT)
+		Direct3D::SetShader(SHADER_NORMALMAP);
+	else
+		Direct3D::SetShader(SHADER_3D);
 	transform.Calclation();//トランスフォームを計算
 	
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
@@ -309,6 +314,7 @@ void    Fbx::Draw(Transform& transform)
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		cb.ambientColor = pMaterialList_[i].ambient;
 		cb.specularColor = pMaterialList_[i].specular;
+		cb.shininess = pMaterialList_[i].shininess;
 		//cb.lightPosition = Light;
 		//XMStoreFloat4(&cb.eyePos, Camera::GetCamPosition());
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;

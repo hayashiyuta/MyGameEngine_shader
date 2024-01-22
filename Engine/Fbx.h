@@ -42,6 +42,7 @@ class Fbx
 		XMFLOAT4	diffuseColor;// ディフューズカラー（FBXからとってきた面の色）
 		XMFLOAT4	ambientColor;
 		XMFLOAT4	specularColor;
+		FLOAT		shininess;
 		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
 		BOOL		hasNormalMap;
 	};
@@ -67,6 +68,7 @@ class Fbx
 	vector<int>index_Count_;
 	RENDER_STATE state_;
 	Texture* pToonTex_;
+	
 
 public:
 

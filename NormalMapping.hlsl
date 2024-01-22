@@ -18,6 +18,7 @@ cbuffer global:register(b0)
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
 	float4		ambientColor;
 	float4		specularColor;
+	float		shininess;
 	int		hasTexture;		// テクスチャ貼ってあるかどうか
 	int		hasNormalMap;
 
@@ -104,46 +105,51 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	/*float4 light = float4(0.0, 2, 0, 1);//点光源の位置
-	light = mul(light, matW);
-	float3 LD = inData.pos_ - light;//光の方向ベクトル
-	float len = length(LD);//光の方向ベクトルを正規化
-	float4 outColor = { 1, 1, 1, 1 };
-	float lightMagnitude = seturate(dot(inData.normal, -normalize(LD)));
-	float k = seturate(1.0f / (1.0f + 1.0 * len * len));
-
-	return outColor * (0.8 * k * lightMagnitude * 0.2f);*/
 
 	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);//ライトの色と明るさ Iin
-	float4 ambentSource = ambientColor;//環境(アンビエント係数 Ka)
+	//float4 ambentSource = ambientColor;//環境(アンビエント係数 Ka)
 	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
 	float4 diffuse;
 	float4 ambient;
-	float4 NL = dot(inData.normal,normalize(lightPosition));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8) * specularColor;
-	//拡散反射
-	float2 uv;
-	uv.x = abs(dot(normalize(inData.eyev), inData.normal));
-	uv.y = abs(dot(normalize(inData.eyev), inData.normal));
-	//float4 nk = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 
-				//0.3 * step(n3, inData.color) + 0.4 * step(n4, inData.color);
-	float4 t1 = g_toon_texture.Sample(g_sampler, uv);
+	if (hasNormalMap)
+	{
+		//inData.light = normalize(inData.light);
+		float4 tmpNormal = normalTex.Sample(g_sampler, inData.uv) * 2.0f - 1.0f;
+		tmpNormal.w = 0;
+		tmpNormal = normalize(tmpNormal);
 
+		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
 
+		float4 reflection = reflect(-inData.light, tmpNormal);
+		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * specularColor;
 
-	uv.x = 0.5;
-
-	if (isTexture == 0) {
-		diffuse = lightSource * diffuseColor * t1;
-		ambient = lightSource * diffuseColor * ambentSource;
+		if (hasTexture != 0)
+		{
+			diffuse = g_texture.Sample(g_sampler, inData.uv) * NL;
+			ambient = g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+		}
+		else
+		{
+			diffuse = diffuseColor * NL;
+			ambient = diffuseColor * ambientColor;
+		}
+		return   diffuse;
 	}
-	else {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
-	}
-	//輪郭=視線ベクトルと面の法線の角度が90度付近
+	else
+	{
+		float4 reflection = reflect(normalize(lightPosition), inData.normal);
 
-	return diffuse + ambient;
-	//return t1;
+		float4 specular = pow(saturate(dot(normalize(reflection), inData.eyev)), shininess) * specularColor;
+		if (hasTexture == 0)
+		{
+			diffuse = lightSource * diffuseColor * inData.color;
+			ambient = lightSource * diffuseColor * ambientColor;
+		}
+		else
+		{
+			diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+			ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+		}
+		return diffuse;
+	}
 }
