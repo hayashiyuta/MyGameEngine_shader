@@ -297,6 +297,7 @@ void    Fbx::Draw(Transform& transform)
 		Direct3D::SetShader(SHADER_NORMALMAP);
 	else
 		Direct3D::SetShader(SHADER_3D);
+	
 	transform.Calclation();//トランスフォームを計算
 	
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
