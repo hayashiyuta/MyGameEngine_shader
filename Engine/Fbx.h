@@ -43,7 +43,7 @@ class Fbx
 		XMFLOAT4	ambientColor;
 		XMFLOAT4	specularColor;
 		FLOAT		shininess;
-		BOOL		isTextured;		// テクスチャ貼ってあるかどうか
+		BOOL		hasTextured;		// テクスチャ貼ってあるかどうか
 		BOOL		hasNormalMap;
 	};
 	//XMFLOAT4	lightPosition;
