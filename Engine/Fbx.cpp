@@ -328,6 +328,7 @@ void    Fbx::Draw(Transform& transform)
 
 
 		Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
+		//Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
 
 		//頂点バッファ
 		UINT stride = sizeof(VERTEX);
@@ -355,7 +356,7 @@ void    Fbx::Draw(Transform& transform)
 		if (pMaterialList_[i].pNormalTexture)
 		{
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
-			Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
+			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRV);
 		}
 
 		ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();

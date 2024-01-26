@@ -6,6 +6,8 @@
 class Ball : public GameObject
 {
 	int hModel_;    //モデル番号
+	int hDice_;
+	Transform trDice_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）

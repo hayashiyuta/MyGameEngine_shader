@@ -19,8 +19,8 @@ cbuffer global:register(b0)
 	float4		ambientColor;
 	float4		specularColor;
 	float		shininess;
-	int		hasTexture;		// テクスチャ貼ってあるかどうか
-	int		hasNormalMap;
+	int			hasTexture;		// テクスチャ貼ってあるかどうか
+	int			hasNormalMap;
 
 };
 
@@ -39,9 +39,9 @@ struct VS_OUT
 	float2 uv		: TEXCOORD;	//UV座標
 	float4 eyev		: POSITION;
 	float4 Neyev	: POSITION1;
-	float4 normal	: POSITION2;
-	float4 light	: POSITION3;
-	float4 color	: POSITION4;
+	float4 normal	: NORMAL;
+	float4 light	: POSITION2;
+	float4 color	: COLOR;
 };
 
 /*struct PS_IN
@@ -72,9 +72,10 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	binormal = normalize(binormal);//従法線ベクトルをローカル座標に変換
 
 	normal.w = 0;
-	normal = mul(normal, matNormal);
+	/*normal = mul(normal, matNormal);
 	normal = normalize(normal);//法線ベクトルをローカル座標に変換
-	outData.normal = normal;
+	outData.normal = normal;*/
+	outData.normal = normalize(mul(normal, matNormal));
 
 	tangent = mul(tangent, matNormal);
 	tangent.w = 0;
@@ -126,9 +127,9 @@ float4 PS(VS_OUT inData) : SV_Target
 		tmpNormal = normalize(tmpNormal);
 		tmpNormal.w = 0;
 		
-		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
-		float4 reflection = reflect(-inData.light, tmpNormal);
-		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * specularColor;
+		float4 NL = clamp(dot(normalize(inData.light), tmpNormal), 0, 1);
+		float4 reflection = reflect(normalize(inData.light), tmpNormal);
+		float4 specular = pow(dot(normalize(reflection), inData.Neyev), shininess) * specularColor;
 
 		if (hasTexture != 0)
 		{
