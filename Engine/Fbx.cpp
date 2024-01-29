@@ -297,7 +297,6 @@ void    Fbx::Draw(Transform& transform)
 		Direct3D::SetShader(SHADER_NORMALMAP);
 	else
 		Direct3D::SetShader(SHADER_3D);
-	
 	transform.Calclation();//トランスフォームを計算
 	
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
@@ -328,7 +327,7 @@ void    Fbx::Draw(Transform& transform)
 
 
 		Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
-		//Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
+		
 
 		//頂点バッファ
 		UINT stride = sizeof(VERTEX);
@@ -359,8 +358,8 @@ void    Fbx::Draw(Transform& transform)
 			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRV);
 		}
 
-		ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
+		//ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
+		//Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
 
 		Direct3D::pContext_->DrawIndexed(index_Count_[i], 0, 0);//polygonCount_ * 3
 	}
