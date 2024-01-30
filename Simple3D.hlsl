@@ -18,6 +18,7 @@ cbuffer global:register(b0)
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
 	float4		ambientColor;
 	float4		specularColor;
+	float		shininess;
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
 	
 };
@@ -61,7 +62,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
 	//outData.uv = uv;
-	outData.uv = uv;
+	outData.uv = (float2)uv;
 	normal.w = 0;
 	normal = mul(normal, matNormal);
 	normal = normalize(normal);
@@ -107,8 +108,9 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = dot(inData.normal,normalize(lightPosition));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect,normalize(inData.eyev))),8) * specularColor;
+	//float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
+	float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+	float4 specular = pow(saturate(dot(reflection,normalize(inData.eyev))),8) * specularColor;
 	//拡散反射
 	float2 uv;
 	uv.x = abs(dot(normalize(inData.eyev), inData.normal));
@@ -123,11 +125,11 @@ float4 PS(VS_OUT inData) : SV_Target
 	
 	if (isTexture == 0) {
 		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambentSource;
+		ambient = lightSource * diffuseColor * ambientColor;
 	}
 	else {
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
 	//輪郭=視線ベクトルと面の法線の角度が90度付近
 	
