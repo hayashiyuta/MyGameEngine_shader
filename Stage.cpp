@@ -23,7 +23,7 @@ void Stage::IntConstantBuffer()
 }
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-	: GameObject(parent, "Stage"), hModel_(-1),lightSourcePosition_(DEF_LIGHT_POSITION)
+	: GameObject(parent, "Stage"), hModel_(-1), hLightBall_(-1), hWater_(-1),lightSourcePosition_(DEF_LIGHT_POSITION)
 {
 }
 
@@ -33,8 +33,10 @@ void Stage::Initialize()
 	//モデルデータのロード
 	//hModel_ = Model::Load("Assets\\Ground.fbx");
 	hLightBall_ = Model::Load("Assets/Ball3.fbx");
+    hWater_ = Model::Load("Assets/WaterNormalMap.fbx");
 	//assert(hModel_ >= 0);
 	assert(hLightBall_ >= 0);
+    assert(hWater_ >= 0);
 	Camera::SetPosition(XMVECTOR{ 0, 10, -20, 0 });
 	Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
 	//transform_.scale_.x = 3.0f;
@@ -139,6 +141,8 @@ void Stage::Draw()
 	//Model::Draw(hModel_);
     Model::SetTransform(hLightBall_, trLightBall);
     Model::Draw(hLightBall_);
+    Model::SetTransform(hWater_, trWater_);
+    Model::Draw(hWater_);
 }
 
 //開放

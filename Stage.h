@@ -12,7 +12,9 @@ class Stage : public GameObject
 {
 	int hModel_;    //ÉÇÉfÉãî‘çÜ
 	int hLightBall_;
+	int hWater_;
 	Transform trLightBall;
+	Transform trWater_;
 	ID3D11Buffer* pCBStageScene_;
 	void IntConstantBuffer();
 	XMFLOAT4 lightSourcePosition_;
