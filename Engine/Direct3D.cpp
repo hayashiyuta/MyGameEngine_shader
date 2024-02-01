@@ -128,7 +128,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
 	//ブレンドステート
-	/*D3D11_BLEND_DESC BlendDesc;
+	D3D11_BLEND_DESC BlendDesc;
 	ZeroMemory(&BlendDesc, sizeof(BlendDesc));
 	BlendDesc.AlphaToCoverageEnable = FALSE;
 	BlendDesc.IndependentBlendEnable = FALSE;
@@ -143,7 +143,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateBlendState(&BlendDesc, &pBlendState);
 
 	float blendFactor[4] = { D3D11_BLEND_ZERO , D3D11_BLEND_ZERO , D3D11_BLEND_ZERO ,D3D11_BLEND_ZERO };
-	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);*/
+	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);
 
 
 

@@ -15,9 +15,9 @@ void Ball::Initialize()
 	assert(hModel_ >= 0);
 	assert(hDice_ >= 0);
 	transform_.position_.x = 1;
-	transform_.position_.y = 3;
-	transform_.scale_ = XMFLOAT3(4, 4, 4);
-	trDice_.position_ = XMFLOAT3(1, 4, 0);
+	transform_.position_.y = 2;
+	transform_.scale_ = XMFLOAT3(3, 3, 3);
+	trDice_.position_ = XMFLOAT3(1, 6, 0);
 }
 
 //çXêV
