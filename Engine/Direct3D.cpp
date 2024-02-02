@@ -128,13 +128,13 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
 	//ブレンドステート
-	/*D3D11_BLEND_DESC BlendDesc;
+	D3D11_BLEND_DESC BlendDesc;
 	ZeroMemory(&BlendDesc, sizeof(BlendDesc));
 	BlendDesc.AlphaToCoverageEnable = FALSE;
 	BlendDesc.IndependentBlendEnable = FALSE;
 	BlendDesc.RenderTarget[0].BlendEnable = TRUE;//半透明使うかどうか
 	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;//今描画しようとしているもの
-	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;//すでに描画されているもの
+	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//すでに描画されているもの
 	BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
@@ -143,7 +143,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateBlendState(&BlendDesc, &pBlendState);
 
 	float blendFactor[4] = { D3D11_BLEND_ZERO , D3D11_BLEND_ZERO , D3D11_BLEND_ZERO ,D3D11_BLEND_ZERO };
-	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);*/
+	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);
 
 
 
