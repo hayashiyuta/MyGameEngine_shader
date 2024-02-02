@@ -11,7 +11,7 @@ void Ball::Initialize()
 {
 	//モデルデータのロード
 	hModel_ = Model::Load("Assets\\Ball.fbx");
-	hDice_ = Model::Load("Assets\\diceblue.fbx");
+	hDice_ = Model::Load("Assets\\Dice.fbx");
 	assert(hModel_ >= 0);
 	assert(hDice_ >= 0);
 	transform_.position_.x = 1;

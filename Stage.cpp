@@ -45,6 +45,8 @@ void Stage::Initialize()
 	trLightBall.position_ = { 0, 0, 0 };
 	trLightBall.rotate_ = { 0, 0, 0 };
 	trLightBall.scale_ = { 0.4, 0.4, 0.4 };
+
+    trWater_.rotate_ = {0,0,0};
     
 	
 	IntConstantBuffer();
