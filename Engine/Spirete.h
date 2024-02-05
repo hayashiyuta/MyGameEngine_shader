@@ -21,6 +21,7 @@ class Spirete
 	{
 		XMVECTOR position;
 		XMVECTOR uv;
+		float scroll;
 	};
 	UINT64 vertexNum;//’¸“_”
 	std::vector<VERTEX> vertices_;//’¸“_î•ñ
