@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include "Direct3D.h"
 #include "Texture.h"
+#include"Transform.h"
 #include<vector>
 using namespace DirectX;
 
@@ -14,6 +15,9 @@ class Spirete
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX	matW;
+		XMMATRIX	uvTrans;
+		XMFLOAT4	color;
+		float scroll;
 	};
 
 	//頂点情報
@@ -21,7 +25,7 @@ class Spirete
 	{
 		XMVECTOR position;
 		XMVECTOR uv;
-		float scroll;
+		
 	};
 	UINT64 vertexNum;//頂点数
 	std::vector<VERTEX> vertices_;//頂点情報
@@ -40,8 +44,9 @@ public:
 	~Spirete();
 	//void
 	HRESULT Initialize();
-	void Draw(XMMATRIX& worldMatrix);
+	void Draw(Transform& transform);
 	void Release();
+	float scrollVal;
 
 private:
 	
@@ -56,7 +61,7 @@ private:
 	HRESULT LoadTexture();//テクスチャをロード
 
 
-	void PassDataTcCB(DirectX::XMMATRIX& worldMatrix);//コンスタントバッファに各種情報を渡す
+	void PassDataTcCB(DirectX::XMMATRIX worldMatrix);//コンスタントバッファに各種情報を渡す
 	void SetBufferToPipeline();//各バッファをパイプラインにセット
 };
 

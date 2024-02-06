@@ -6,7 +6,8 @@
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 
-Spirete::Spirete() :pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), pTexture_(nullptr)
+Spirete::Spirete() :pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), 
+pConstantBuffer_(nullptr), pTexture_(nullptr),scrollVal(0)
 {
 }
 
@@ -59,17 +60,15 @@ HRESULT Spirete::Initialize()
 	return S_OK;
 }
 
-void Spirete::Draw(XMMATRIX& worldMatrix)
+void Spirete::Draw(Transform& transform)
 {
+	scrollVal = 0.0f;
+	scrollVal += 0.001f;
 	Direct3D::SetShader(SHADER_2D);
-
-	PassDataTcCB(worldMatrix);
-
-
 
 	SetBufferToPipeline();
 
-	
+	PassDataTcCB(transform.GetWorldMatrix());
 }
 
 void Spirete::Release()
@@ -190,7 +189,7 @@ HRESULT Spirete::LoadTexture()//テクスチャをロード
 	return S_OK;
 }
 
-void Spirete::PassDataTcCB(DirectX::XMMATRIX& worldMatrix)//コンスタントバッファに各種情報を渡す
+void Spirete::PassDataTcCB(DirectX::XMMATRIX worldMatrix)//コンスタントバッファに各種情報を渡す
 {
 	//コンスタントバッファに渡す情報
 

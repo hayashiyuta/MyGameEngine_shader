@@ -12,6 +12,7 @@ cbuffer global
 {
 	//float4x4	matWVP;			 ワールド・ビュー・プロジェクションの合成行列
 	float4x4	matW;	//ワールド行列
+	float		scroll;//スクロール量の変数
 };
 
 //───────────────────────────────────────
@@ -53,12 +54,11 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD)//, float4 normal : NORMAL
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	//float4 lightSource = float4(1.0f, 1.0f, 1.0f, 4.0f);
-	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
-
-	//float4 diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-	//float4 ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * float4(0.2, 0.2, 0.2, 1);
-	//return diffuse + ambient;
-	float output = floor(g_texture.Sample(g_sampler, inData.uv)*8.0)/8;
+	//float output = floor(g_texture.Sample(g_sampler, inData.uv)*8.0)/8;
+	float4 output;
+	//output = g_
+	float2 tmpUV = inData.uv;
+	tmpUV.x = tmpUV.x + scroll;
+	
 	return output;
 }
