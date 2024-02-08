@@ -10,9 +10,9 @@ Ball::Ball(GameObject* parent)
 void Ball::Initialize()
 {
 	//モデルデータのロード
-	//hModel_ = Model::Load("Assets\\Ball.fbx");
+	hModel_ = Model::Load("Assets\\Ball.fbx");
 	hDice_ = Model::Load("Assets\\Dice.fbx");
-	//assert(hModel_ >= 0);
+	assert(hModel_ >= 0);
 	assert(hDice_ >= 0);
 	transform_.position_.x = 1;
 	transform_.position_.y = 2;
@@ -32,8 +32,8 @@ void Ball::Update()
 //描画
 void Ball::Draw()
 {
-	//Model::SetTransform(hModel_, transform_);
-	//Model::Draw(hModel_);
+	Model::SetTransform(hModel_, transform_);
+	Model::Draw(hModel_);
 	Model::SetTransform(hDice_, trDice_);
 	Model::Draw(hDice_);
 }

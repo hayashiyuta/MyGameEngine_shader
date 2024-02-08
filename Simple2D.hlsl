@@ -56,8 +56,8 @@ float4 PS(VS_OUT inData) : SV_Target
 {
 	//float output = floor(g_texture.Sample(g_sampler, inData.uv)*8.0)/8;
 	float4 output;
-	//output = g_
 	float2 tmpUV = inData.uv;
+	output = g_texture.Sample(g_sampler, inData.uv);
 	tmpUV.x = tmpUV.x + scroll;
 	
 	return output;

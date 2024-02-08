@@ -14,7 +14,7 @@ class Spirete
 	//コンスタントバッファー
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matW;
+		XMMATRIX	world;
 		XMMATRIX	uvTrans;
 		XMFLOAT4	color;
 		float scroll;
@@ -45,6 +45,7 @@ public:
 	//void
 	HRESULT Initialize();
 	void Draw(Transform& transform);
+	void Draw(Transform& transform, RECT rect, float alpha);
 	void Release();
 	float scrollVal;
 

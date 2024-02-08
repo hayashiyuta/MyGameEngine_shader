@@ -69,7 +69,11 @@ void Spirete::Draw(Transform& transform)
 	SetBufferToPipeline();
 
 	PassDataTcCB(transform.GetWorldMatrix());
+
+	Direct3D::pContext_->DrawIndexed((UINT)indexNum, (UINT)0, 0);
 }
+
+
 
 void Spirete::Release()
 {
@@ -196,7 +200,9 @@ void Spirete::PassDataTcCB(DirectX::XMMATRIX worldMatrix)//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚
 	CONSTANT_BUFFER cb;
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	//cb.matWVP = XMMatrixTranspose(worldMatrix * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-	cb.matW = XMMatrixTranspose(worldMatrix);
+	cb.world = XMMatrixTranspose(worldMatrix);
+	cb.scroll = scrollVal;
+	
 
 	Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPU‚©‚ç‚Ìƒf[ƒ^ƒAƒNƒZƒX‚ğ~‚ß‚é
 	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// ƒf[ƒ^‚ğ’l‚ğ‘—‚é
