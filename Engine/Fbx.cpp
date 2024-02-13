@@ -238,7 +238,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		{
 			//テクスチャ情報
 			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);//sNormalMap
-			//テクスチャの数数
+			//テクスチャの数
 			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
 			//テクスチャあり

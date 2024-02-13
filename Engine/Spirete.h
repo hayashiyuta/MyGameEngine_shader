@@ -46,6 +46,7 @@ public:
 	HRESULT Initialize();
 	void Draw(Transform& transform);
 	void Draw(Transform& transform, RECT rect, float alpha);
+	XMFLOAT2 GetTextureSize() { return pTexture_->GetTextureSize(); }
 	void Release();
 	float scrollVal;
 

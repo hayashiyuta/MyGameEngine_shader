@@ -44,5 +44,8 @@ namespace Direct3D
 
 	//解放
 	void Release();
+	//Zバッファへの書き込みON/OFF
+	void SetDepthBafferWriteEnable(bool isWrite);
+	extern SIZE screenSize;
 
 };
