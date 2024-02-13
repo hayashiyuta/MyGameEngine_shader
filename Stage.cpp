@@ -37,7 +37,7 @@ void Stage::Initialize()
 	//assert(hModel_ >= 0);
 	assert(hLightBall_ >= 0);
     assert(hWater_ >= 0);
-	Camera::SetPosition(XMVECTOR{ 0, 10, -20, 0 });
+	Camera::SetPosition(XMVECTOR{ 0, 10, -10, 0 });
 	Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
 	//transform_.scale_.x = 3.0f;
 	//transform_.scale_.z = 3.0f;

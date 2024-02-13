@@ -111,21 +111,21 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	vp.TopLeftX = 0;	//左
 	vp.TopLeftY = 0;	//上
 
-	//深度ステンシルビューの作成
-	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width = winW;
-	descDepth.Height = winH;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	pDevice_->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
-	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
+	////深度ステンシルビューの作成
+	//D3D11_TEXTURE2D_DESC descDepth;
+	//descDepth.Width = winW;
+	//descDepth.Height = winH;
+	//descDepth.MipLevels = 1;
+	//descDepth.ArraySize = 1;
+	//descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	//descDepth.SampleDesc.Count = 1;
+	//descDepth.SampleDesc.Quality = 0;
+	//descDepth.Usage = D3D11_USAGE_DEFAULT;
+	//descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	//descDepth.CPUAccessFlags = 0;
+	//descDepth.MiscFlags = 0;
+	//pDevice_->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
+	//pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
 	//ブレンドステート
 	D3D11_BLEND_DESC BlendDesc;

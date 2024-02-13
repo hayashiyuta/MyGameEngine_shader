@@ -62,8 +62,7 @@ HRESULT Spirete::Initialize()
 
 void Spirete::Draw(Transform& transform)
 {
-	scrollVal = 0.0f;
-	scrollVal += 0.001f;
+	
 	Direct3D::SetShader(SHADER_2D);
 
 	SetBufferToPipeline();
@@ -75,6 +74,9 @@ void Spirete::Draw(Transform& transform)
 
 void Spirete::Draw(Transform& transform, RECT rect, float alpha)
 {
+	scrollVal = 0.0f;
+	scrollVal += 0.01f;
+
 	//いろいろ設定
 	Direct3D::SetShader(SHADER_TYPE::SHADER_2D);
 	UINT stride = sizeof(VERTEX);
@@ -113,6 +115,8 @@ void Spirete::Draw(Transform& transform, RECT rect, float alpha)
 	cb.uvTrans = XMMatrixTranspose(mTexel);
 
 	cb.color = XMFLOAT4(1, 1, 1, alpha);
+
+	cb.scroll = scrollVal;
 
 	Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのリソースアクセスを一時止める
 	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));		// リソースへ値を送る

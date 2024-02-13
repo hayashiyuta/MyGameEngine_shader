@@ -11,13 +11,13 @@ void Ball::Initialize()
 {
 	//モデルデータのロード
 	hModel_ = Model::Load("Assets\\Ball.fbx");
-	hDice_ = Model::Load("Assets\\Dice.fbx");
+	hDice_  = Model::Load("Assets\\Dice.fbx");
 	assert(hModel_ >= 0);
-	assert(hDice_ >= 0);
+	assert(hDice_  >= 0);
 	transform_.position_.x = 1;
 	transform_.position_.y = 2;
 	transform_.position_.z = 6;
-	transform_.scale_ = XMFLOAT3(3, 3, 3);
+	transform_.scale_ = XMFLOAT3(5, 5, 5);
 	trDice_.position_ = XMFLOAT3(1, 5, -2);
 	trDice_.scale_ = { 2,2,2 };
 }

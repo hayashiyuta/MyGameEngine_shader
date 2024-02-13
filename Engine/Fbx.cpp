@@ -296,10 +296,10 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 void    Fbx::Draw(Transform& transform)
 {
-	if (state_ == RENDER_DIRLIGHT)
+	//if (state_ == RENDER_DIRLIGHT)
 		Direct3D::SetShader(SHADER_NORMALMAP);
-	else
-		Direct3D::SetShader(SHADER_3D);
+	//else
+	//	Direct3D::SetShader(SHADER_3D);
 	transform.Calclation();//トランスフォームを計算
 	
 	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
