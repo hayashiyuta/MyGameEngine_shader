@@ -18,7 +18,7 @@ void Ball::Initialize()
 	transform_.position_.y = 2;
 	transform_.position_.z = 6;
 	transform_.scale_ = XMFLOAT3(5, 5, 5);
-	trDice_.position_ = XMFLOAT3(1, 5, -2);
+	trDice_.position_ = XMFLOAT3(1, 5, 0);
 	trDice_.scale_ = { 2,2,2 };
 }
 

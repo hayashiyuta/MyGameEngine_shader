@@ -151,7 +151,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 		int count = 0;
 
 		//全ポリゴン
-		for (DWORD poly = 0; poly < polygonCount_; poly++)
+		for (DWORD poly = 0; poly < (unsigned int)polygonCount_; poly++)
 		{
 			FbxLayerElementMaterial* mtl = mesh->GetLayer(0)->GetMaterials();
 			int mtlId = mtl->GetIndexArray().GetAt(poly);
@@ -312,7 +312,7 @@ void    Fbx::Draw(Transform& transform)
 		CONSTANT_BUFFER cb;
 
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 
 		cb.diffuseColor = pMaterialList_[i].diffuse;
@@ -327,7 +327,6 @@ void    Fbx::Draw(Transform& transform)
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
 
 		Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
 		

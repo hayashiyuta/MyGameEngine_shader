@@ -37,7 +37,7 @@ void Stage::Initialize()
 	//assert(hModel_ >= 0);
 	assert(hLightBall_ >= 0);
     assert(hWater_ >= 0);
-	Camera::SetPosition(XMVECTOR{ 0, 10, -10, 0 });
+	Camera::SetPosition(XMVECTOR{ 0, 10, -15, 0 });
 	Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
 	//transform_.scale_.x = 3.0f;
 	//transform_.scale_.z = 3.0f;
@@ -131,15 +131,7 @@ void Stage::Update()
 //•`‰æ
 void Stage::Draw()
 {
-	/*for (int x = 0; x < 15; x++)
-	{
-		for (int z = 0; z < 15; z++)
-		{
-			transform_.position_.x = x;
-			transform_.position_.z = z;
-			
-		}
-	}*/
+	
 	//Model::SetTransform(hModel_, transform_);
 	//Model::Draw(hModel_);
     Model::SetTransform(hLightBall_, trLightBall);
